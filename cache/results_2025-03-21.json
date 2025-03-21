@@ -1,0 +1,26 @@
+{
+  "generated_date": "2025-03-21T13:08:11+01:00",
+  "based_on_date": "2025-03-21",
+  "results": [
+    {
+      "original_values": {
+        "Day": 5,
+        "Week": 2,
+        "Month": 1,
+        "Year": 0
+      },
+      "result_date": "2025-05-10T13:08:11.584301+02:00",
+      "formatted_date": "10.05.2025"
+    },
+    {
+      "original_values": {
+        "Day": 0,
+        "Week": 0,
+        "Month": 6,
+        "Year": 1
+      },
+      "result_date": "2026-09-21T13:08:11.584301+02:00",
+      "formatted_date": "21.09.2026"
+    }
+  ]
+}
