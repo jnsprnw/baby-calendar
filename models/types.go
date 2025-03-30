@@ -5,7 +5,7 @@ import (
 )
 
 // TimePeriod repräsentiert die Einträge in der JSON-Datei
-type TimePeriod [4]int // [Tag, Woche, Monat, Jahr]
+type TimePeriod [4]int // Jahr, Monat, Woche, Tag
 
 // ResultEntry enthält die ursprünglichen Werte und das berechnete Datum
 type ResultEntry struct {

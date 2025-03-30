@@ -101,13 +101,13 @@ func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time) []
 	var results []models.ResultEntry
 	for _, period := range timePeriods {
 
-		// period := TimePeriod{0, 1, 1, 1} // [Tag, Woche, Monat, Jahr]
 
 		// Zugriff auf die Werte
-		day := period[0]
-		week := period[1]
-		month := period[2]
-		year := period[3]
+		// Jahr, Monat, Woche, Tag
+		year := period[0]
+		month := period[1]
+		week := period[2]
+		day := period[3]
 
 		// Addieren der Zeitwerte zum aktuellen Datum
 		resultDate := currentDate.

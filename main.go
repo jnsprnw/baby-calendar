@@ -14,7 +14,7 @@ import (
 	ics "github.com/arran4/golang-ical"
 )
 
-const version = "0.1.0"
+const version = "0.1.1"
 const port = 8080
 
 
