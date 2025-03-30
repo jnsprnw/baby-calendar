@@ -14,6 +14,7 @@ type ResultEntry struct {
 	FormattedDate  string     `json:"formatted_date"`
 	ResultId       string     `json:"result_id"`
 	FormattedTimePeriod	string `json:"formatted_time_period"`
+	DaysBetween	int `json:"days_between"`
 }
 
 // CachedResults enthält die Metadaten und Ergebnisse

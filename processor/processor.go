@@ -96,6 +96,16 @@ func FormatTimePeriod(years, months, weeks, days int) string {
     return result
 }
 
+func daysBetween(t1, t2 time.Time) int {
+    // Differenz in Nanosekunden
+    duration := t2.Sub(t1)
+
+    // Umrechnung in Tage (abgerundet)
+    days := int(duration.Hours() / 24)
+
+    return days
+}
+
 // CalculateResults berechnet die Ergebnisdaten basierend auf den Zeitperioden und dem aktuellen Datum
 func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time) []models.ResultEntry {
 	var results []models.ResultEntry
@@ -121,6 +131,7 @@ func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time) []
 			FormattedDate:  resultDate.Format("02.01.2006"),
 			ResultId: fmt.Sprintf("%d-%d-%d-%d", year, month, week, day),
 			FormattedTimePeriod: FormatTimePeriod(year, month, week, day),
+			DaysBetween: daysBetween(currentDate, resultDate),
 		}
 		results = append(results, result)
 	}

@@ -193,9 +193,9 @@ func generateICalendar(results []models.ResultEntry, birthDate time.Time, name s
 					event.SetSummary(result.FormattedTimePeriod)
 				}
         if name != "" {
-					event.SetDescription(fmt.Sprintf("%s ist %s alt!", name, result.FormattedTimePeriod))
+					event.SetDescription(fmt.Sprintf("%s ist %d Tage alt!", name, result.DaysBetween))
 				} else {
-					event.SetDescription(result.FormattedTimePeriod)
+					event.SetDescription(fmt.Sprintf("Das sind %d Tage", result.DaysBetween))
 				}
 
         event.SetLocation("") // Optional: Ort hinzufügen
