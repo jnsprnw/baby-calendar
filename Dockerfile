@@ -20,6 +20,9 @@ WORKDIR /root/
 # Kopiere die kompilierte Anwendung
 COPY --from=builder /app/main .
 
+# Kopiere notwendige Daten und Konfigurationen
+COPY --from=builder /app/data ./data
+
 # Erstelle das Cache-Verzeichnis
 RUN mkdir -p /root/.cache && chmod 755 /root/.cache
 
