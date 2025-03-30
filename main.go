@@ -14,7 +14,7 @@ import (
 	ics "github.com/arran4/golang-ical"
 )
 
-const version = "0.1.2"
+const version = "0.1.3"
 const port = 8080
 
 
@@ -192,7 +192,6 @@ func generateICalendar(results []models.ResultEntry, birthDate time.Time, name s
 				} else {
 					event.SetSummary(result.FormattedTimePeriod)
 				}
-        event.SetSummary(result.FormattedTimePeriod)
         if name != "" {
 					event.SetDescription(fmt.Sprintf("%s ist %s alt!", name, result.FormattedTimePeriod))
 				} else {
