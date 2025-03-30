@@ -17,6 +17,8 @@ type ResultEntry struct {
 	OriginalValues TimePeriod `json:"original_values"`
 	ResultDate     time.Time  `json:"result_date"`
 	FormattedDate  string     `json:"formatted_date"`
+	ResultId       string     `json:"result_id"`
+	FormattedTimePeriod	string `json:"formatted_time_period"`
 }
 
 // CachedResults enthält die Metadaten und Ergebnisse

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -33,6 +34,68 @@ func LoadTimePeriods(filePath string) ([]models.TimePeriod, error) {
 	return timePeriods, nil
 }
 
+func FormatTimePeriod(years, months, weeks, days int) string {
+    parts := []string{}
+
+    // Jahre hinzufügen, wenn vorhanden
+    if years > 0 {
+        if years == 1 {
+            parts = append(parts, "1 Jahr")
+        } else {
+            parts = append(parts, fmt.Sprintf("%d Jahre", years))
+        }
+    }
+
+    // Monate hinzufügen, wenn vorhanden
+    if months > 0 {
+        if months == 1 {
+            parts = append(parts, "1 Monat")
+        } else {
+            parts = append(parts, fmt.Sprintf("%d Monate", months))
+        }
+    }
+
+    // Wochen hinzufügen, wenn vorhanden
+    if weeks > 0 {
+        if weeks == 1 {
+            parts = append(parts, "1 Woche")
+        } else {
+            parts = append(parts, fmt.Sprintf("%d Wochen", weeks))
+        }
+    }
+
+    // Tage hinzufügen, wenn vorhanden
+    if days > 0 {
+        if days == 1 {
+            parts = append(parts, "1 Tag")
+        } else {
+            parts = append(parts, fmt.Sprintf("%d Tage", days))
+        }
+    }
+
+    // Fall abfangen: Wenn alle Werte 0 sind
+    if len(parts) == 0 {
+        return "0 Tage"
+    }
+
+    // Die Teile mit Kommas und "und" verbinden
+    var result string
+
+    switch len(parts) {
+    case 1:
+        result = parts[0]
+    case 2:
+        result = parts[0] + " und " + parts[1]
+    default:
+        // Bei mehr als 2 Teilen: Kommas zwischen allen außer den letzten beiden,
+        // die durch "und" verbunden werden
+        last := len(parts) - 1
+        result = strings.Join(parts[:last], ", ") + " und " + parts[last]
+    }
+
+    return result
+}
+
 // CalculateResults berechnet die Ergebnisdaten basierend auf den Zeitperioden und dem aktuellen Datum
 func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time) []models.ResultEntry {
 	var results []models.ResultEntry
@@ -47,6 +110,8 @@ func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time) []
 			OriginalValues: period,
 			ResultDate:     resultDate,
 			FormattedDate:  resultDate.Format("02.01.2006"),
+			ResultId: fmt.Sprintf("%d-%d-%d-%d", period.Year, period.Month, period.Week, period.Day),
+			FormattedTimePeriod: FormatTimePeriod(period.Year, period.Month, period.Week, period.Day),
 		}
 		results = append(results, result)
 	}

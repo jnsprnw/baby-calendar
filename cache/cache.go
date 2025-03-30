@@ -5,7 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
+	"time"
 )
+
+const cacheDir = ".cache"
 
 // LoadCachedResults lädt die gecachten Ergebnisse aus einer Datei
 func LoadCachedResults(cachePath string) (models.CachedResults, error) {
@@ -46,4 +50,16 @@ func SaveCachedResults(cachePath string, results models.CachedResults) {
 	}
 
 	fmt.Printf("Ergebnisse wurden im Cache gespeichert: %s\n", cachePath)
+}
+
+func GenerateCacheFileName(date time.Time, version string) string {
+	dateStr := date.Format("2006-01-02")
+	return filepath.Join(cacheDir, fmt.Sprintf("results_%s_%s.json", dateStr, version))
+}
+
+func CreateCacheDir() error {
+	if err := os.MkdirAll(cacheDir, 0755); err != nil {
+		return fmt.Errorf("Fehler beim Erstellen des Cache-Verzeichnisses: %w", err)
+	}
+	return nil
 }
