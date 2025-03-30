@@ -14,7 +14,7 @@ import (
 	ics "github.com/arran4/golang-ical"
 )
 
-const version = "0.1.1"
+const version = "0.1.2"
 const port = 8080
 
 
@@ -55,10 +55,12 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
+	name := query.Get("name")
+
 	format := query.Get("format")
-    if format == "" {
-        format = "json"
-    }
+  if format == "" {
+    format = "json"
+  }
 
 	birth := time.Now()
 
@@ -114,7 +116,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 
     case "ical":
         // iCalendar-Antwort erstellen
-        responseData, err = generateICalendar(results, birth)
+        responseData, err = generateICalendar(results, birth, name)
         if err != nil {
             http.Error(w, "Error generating iCalendar", http.StatusInternalServerError)
             return
@@ -160,7 +162,7 @@ func saveCachedData(path string, data []byte) error {
 }
 
 // Hilfsfunktion zur Generierung von iCalendar-Daten
-func generateICalendar(results []models.ResultEntry, birthDate time.Time) ([]byte, error) {
+func generateICalendar(results []models.ResultEntry, birthDate time.Time, name string) ([]byte, error) {
     // Erstelle einen neuen iCalendar
     cal := ics.NewCalendar()
     cal.SetProductId("-//Baby Calendar//Go Implementation//EN")
@@ -173,16 +175,30 @@ func generateICalendar(results []models.ResultEntry, birthDate time.Time) ([]byt
         // Berechne das Datum für dieses Ereignis basierend auf der Periode
         eventDate := result.ResultDate // birthDate.AddDate(0, 0, result.DayOffset)
 
+
         // Setze Event-Eigenschaften
         event.SetCreatedTime(time.Now())
         event.SetDtStampTime(time.Now())
         event.SetModifiedAt(time.Now())
-        event.SetStartAt(eventDate)
-        event.SetEndAt(eventDate.Add(24 * time.Hour)) // Ganztägiges Ereignis
+
+        startDate := eventDate.Format("20060102")
+	      endDate := eventDate.AddDate(0, 0, 1).Format("20060102")
+
+	      event.AddProperty("DTSTART", startDate)
+				event.AddProperty("DTSTART;VALUE=DATE", startDate)
+				event.AddProperty("DTEND;VALUE=DATE", endDate)
+				if name != "" {
+					event.SetSummary(fmt.Sprintf("%s %s", name, result.FormattedTimePeriod))
+				} else {
+					event.SetSummary(result.FormattedTimePeriod)
+				}
         event.SetSummary(result.FormattedTimePeriod)
-        // event.SetDescription(fmt.Sprintf("%s (%d Tage nach Geburt)",
-        //                                   result.Description,
-        //                                   result.DayOffset))
+        if name != "" {
+					event.SetDescription(fmt.Sprintf("%s ist %s alt!", name, result.FormattedTimePeriod))
+				} else {
+					event.SetDescription(result.FormattedTimePeriod)
+				}
+
         event.SetLocation("") // Optional: Ort hinzufügen
     }
 
