@@ -100,18 +100,27 @@ func FormatTimePeriod(years, months, weeks, days int) string {
 func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time) []models.ResultEntry {
 	var results []models.ResultEntry
 	for _, period := range timePeriods {
+
+		// period := TimePeriod{0, 1, 1, 1} // [Tag, Woche, Monat, Jahr]
+
+		// Zugriff auf die Werte
+		day := period[0]
+		week := period[1]
+		month := period[2]
+		year := period[3]
+
 		// Addieren der Zeitwerte zum aktuellen Datum
 		resultDate := currentDate.
-			AddDate(period.Year, period.Month, period.Day).
-			AddDate(0, 0, period.Week*7) // Wochen in Tage umrechnen
+			AddDate(year, month, day).
+			AddDate(0, 0, week*7) // Wochen in Tage umrechnen
 
 		// Ergebnis speichern
 		result := models.ResultEntry{
 			OriginalValues: period,
 			ResultDate:     resultDate,
 			FormattedDate:  resultDate.Format("02.01.2006"),
-			ResultId: fmt.Sprintf("%d-%d-%d-%d", period.Year, period.Month, period.Week, period.Day),
-			FormattedTimePeriod: FormatTimePeriod(period.Year, period.Month, period.Week, period.Day),
+			ResultId: fmt.Sprintf("%d-%d-%d-%d", year, month, week, day),
+			FormattedTimePeriod: FormatTimePeriod(year, month, week, day),
 		}
 		results = append(results, result)
 	}

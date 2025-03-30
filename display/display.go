@@ -9,10 +9,10 @@ import (
 func DisplayResults(results []models.ResultEntry) {
 	for _, result := range results {
 		fmt.Printf("Original: +%d Tage, +%d Wochen, +%d Monate, +%d Jahre => Neues Datum: %s\n",
-			result.OriginalValues.Day,
-			result.OriginalValues.Week,
-			result.OriginalValues.Month,
-			result.OriginalValues.Year,
+			result.OriginalValues[0],
+			result.OriginalValues[1],
+			result.OriginalValues[2],
+			result.OriginalValues[3],
 			result.FormattedDate)
 	}
 }

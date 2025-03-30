@@ -2,7 +2,6 @@ package main
 
 import (
 	"baby-calendar/cache"
-	"baby-calendar/display"
 	"baby-calendar/models"
 	"baby-calendar/processor"
 	"encoding/json"
@@ -36,11 +35,11 @@ func main() {
 		fmt.Printf("Fehler beim Laden der Zeitperioden: %v\n", err)
 		return
 	}
-	fmt.Println("Zeitperioden erfolgreich geladen")
+	fmt.Printf("%d Zeitperioden erfolgreich geladen\n", len(timePeriods))
 
 	http.HandleFunc("/calendar", handleCalendarRequest)
 
-	fmt.Printf("Server läuft auf Port %d...\n", port)
+	fmt.Printf("Server läuft auf Port %d in der Version %s\n", port, version)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 
@@ -75,7 +74,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dateStr := birth.Format("2006-01-02")
-	fmt.Printf("Geburtstag: %s\n", birth.Format("02.01.2006"))
+	// fmt.Printf("Geburtstag: %s\n", birth.Format("02.01.2006"))
 
 	cachePath := cache.GenerateCacheFileName(birth, version)
 
@@ -94,11 +93,11 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
     }
 
 	// 4. Keine Cache-Datei gefunden oder Fehler beim Laden - Neue Berechnung durchführen
-	fmt.Println("Kein gültiger Cache gefunden. Berechne neue Ergebnisse...")
+	fmt.Printf("Kein gültiger Cache gefunden. Berechne neue Ergebnisse für %s..\n", dateStr)
 
 	// 6. Berechnung der neuen Daten durchführen
 	results := processor.CalculateResults(timePeriods, birth)
-	display.DisplayResults(results)
+	// display.DisplayResults(results)
 
 	// Je nach Format die Antwort generieren
     var responseData []byte
@@ -169,7 +168,7 @@ func generateICalendar(results []models.ResultEntry, birthDate time.Time) ([]byt
 
     // Für jedes Ergebnis einen Event erstellen
     for _, result := range results {
-        event := cal.AddEvent(fmt.Sprintf("%s-%s", result.ResultId, birthDate.Format("20060102")))
+        event := cal.AddEvent(fmt.Sprintf("%s-%s-%s", result.ResultId, birthDate.Format("20060102"), version))
 
         // Berechne das Datum für dieses Ereignis basierend auf der Periode
         eventDate := result.ResultDate // birthDate.AddDate(0, 0, result.DayOffset)
