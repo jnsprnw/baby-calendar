@@ -26,7 +26,7 @@ COPY --from=builder /app/templates ./templates
 # Füge weitere COPY-Befehle hinzu für andere benötigte Dateien
 
 # Erstelle das Cache-Verzeichnis
-RUN mkdir -p /root/cache && chmod 755 /root/cache
+RUN mkdir -p /root/.cache && chmod 755 /root/.cache
 
 # Exponiere den Port, den deine App verwendet
 EXPOSE 8080
