@@ -5,7 +5,12 @@ import (
 )
 
 // TimePeriod repräsentiert die Einträge in der JSON-Datei
-type TimePeriod [4]int // Jahr, Monat, Woche, Tag
+// type TimePeriod [int, int, int, int, []string, string] // Jahr, Monat, Woche, Tag
+type TimePeriod struct {
+    Values 			[4]int      `json:"values"`
+    Categories  []string    `json:"categories"`
+    Emoji				string      `json:"emoji,omitempty"`
+}
 
 // ResultEntry enthält die ursprünglichen Werte und das berechnete Datum
 type ResultEntry struct {
@@ -15,6 +20,8 @@ type ResultEntry struct {
 	ResultId       string     `json:"result_id"`
 	FormattedTimePeriod	string `json:"formatted_time_period"`
 	DaysBetween	int `json:"days_between"`
+	Emoji	string `json:"emoji"`
+	Categories  []string    `json:"categories"`
 }
 
 // CachedResults enthält die Metadaten und Ergebnisse

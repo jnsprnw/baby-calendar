@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -52,9 +53,16 @@ func SaveCachedResults(cachePath string, results models.CachedResults) {
 	fmt.Printf("Ergebnisse wurden im Cache gespeichert: %s\n", cachePath)
 }
 
-func GenerateCacheFileName(date time.Time, version string) string {
+func GenerateCacheFileName(date time.Time, version string, excludedCategories []string, name string) string {
 	dateStr := date.Format("2006-01-02")
-	return filepath.Join(cacheDir, fmt.Sprintf("results_%s_%s.json", dateStr, version))
+	fingerprint := []string{dateStr, version}
+	if len(excludedCategories) > 0 {
+		fingerprint = append(fingerprint, strings.Join(excludedCategories[:], "_"))
+	}
+	if name != "" {
+		fingerprint = append(fingerprint, NameToFilename(name))
+	}
+	return filepath.Join(cacheDir, fmt.Sprintf("results_%s.json", strings.Join(fingerprint[:], "_")))
 }
 
 func CreateCacheDir() error {
@@ -62,4 +70,25 @@ func CreateCacheDir() error {
 		return fmt.Errorf("Fehler beim Erstellen des Cache-Verzeichnisses: %w", err)
 	}
 	return nil
+}
+
+func NameToFilename(cleanName string) string {
+	if cleanName == "" {
+		return ""
+	}
+
+	// 1. Leerzeichen durch Unterstriche ersetzen
+	filename := strings.ReplaceAll(cleanName, " ", "_")
+
+	// 2. Unerwünschte Dateinamenzeichen ersetzen
+	filename = strings.ReplaceAll(filename, "'", "")
+	filename = strings.ReplaceAll(filename, ".", "")
+
+	// 3. Länge begrenzen
+	maxLength := 100
+	if len(filename) > maxLength {
+		filename = filename[:maxLength]
+	}
+
+	return filename
 }
