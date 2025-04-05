@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"sort"
 	"strings"
 	"time"
 )
@@ -184,6 +185,9 @@ func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time, ex
 		}
 		results = append(results, result)
 	}
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].DaysBetween < results[j].DaysBetween
+	})
 	return results
 }
 
