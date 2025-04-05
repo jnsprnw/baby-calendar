@@ -15,9 +15,10 @@ import (
 	"unicode"
 
 	ics "github.com/arran4/golang-ical"
+	"github.com/rs/cors"
 )
 
-const version = "0.1.9"
+const version = "0.1.10"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -40,9 +41,25 @@ func main() {
 	fmt.Printf("%d Zeitperioden erfolgreich geladen\n", len(timePeriods))
 
 	http.HandleFunc("/calendar", handleCalendarRequest)
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{
+			// "http://localhost:3000",    // Entwicklungsumgebung
+			// "https://deine-domain.com", // Deine Produktionsdomäne
+			"http://localhost:5173", // SvelteKit dev Server
+			"http://localhost:4173", // SvelteKit preview
+		},
+		AllowedMethods:   []string{"GET"},
+		AllowedHeaders:   []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		AllowCredentials: true,
+		Debug:            false, // Auf true setzen für Debugging
+	})
+
+	// Die Hauptsache hier: Wir erstellen einen neuen Handler, der alle
+	// registrierten http.DefaultServeMux-Routen umhüllt
+	handler := c.Handler(http.DefaultServeMux)
 
 	fmt.Printf("Server läuft auf Port %d in der Version %s\n", port, version)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
 func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +85,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 
 	format := query.Get("format")
 	if format == "" {
-		format = "json"
+		format = "ical"
 	}
 
 	birth := time.Now()
