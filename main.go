@@ -17,7 +17,7 @@ import (
 	ics "github.com/arran4/golang-ical"
 )
 
-const version = "0.1.7"
+const version = "0.1.8"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -178,9 +178,19 @@ func saveCachedData(path string, data []byte) error {
 
 // Hilfsfunktion zur Generierung von iCalendar-Daten
 func generateICalendar(results []models.ResultEntry, birthDate time.Time, name string) ([]byte, error) {
-	// Erstelle einen neuen iCalendar
 	cal := ics.NewCalendar()
-	cal.SetProductId("-//Baby Calendar//Go Implementation//EN")
+	cal.SetProductId(fmt.Sprintf("-//Baby Calendar//Go Implementation %s//DE", version)) // PRODID
+	cal.SetVersion("2.0")                                                                // VERSION
+	cal.SetCalscale("GREGORIAN")                                                         // CALSCALE
+
+	// Benutzerdefinierte Eigenschaften hinzufügen
+	if name != "" {
+		cal.SetXWRCalName(fmt.Sprintf("%s Kalender", name))
+	} else {
+		cal.SetXWRCalName("Baby Kalender")
+	}
+	cal.SetXWRCalDesc("Auf Basis einer URL generierter Kalender mit besonderen Jahrestagen")
+
 	cal.SetMethod(ics.MethodPublish)
 
 	// Für jedes Ergebnis einen Event erstellen
@@ -226,8 +236,6 @@ func generateICalendar(results []models.ResultEntry, birthDate time.Time, name s
 				event.SetDescription(fmt.Sprintf("Geburtstag!"))
 			}
 		}
-
-		event.SetLocation("") // Optional: Ort hinzufügen
 	}
 
 	// iCalendar-Daten als String rendern
