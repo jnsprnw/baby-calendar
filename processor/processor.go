@@ -113,7 +113,7 @@ func FormatTimePeriod(years, months, weeks, days int) string {
 
 	// Fall abfangen: Wenn alle Werte 0 sind
 	if len(parts) == 0 {
-		return "0 Tage"
+		return "Geburtstag"
 	}
 
 	// Die Teile mit Kommas und "und" verbinden
