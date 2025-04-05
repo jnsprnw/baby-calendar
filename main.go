@@ -17,7 +17,7 @@ import (
 	ics "github.com/arran4/golang-ical"
 )
 
-const version = "0.1.8"
+const version = "0.1.9"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -75,8 +75,14 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 
 	var excludedCategories = []string{}
 
-	if query.Has("excludeBirthday") {
+	if !query.Has("include-birth") {
+		excludedCategories = append(excludedCategories, "birth")
+	}
+	if !query.Has("include-birthdays") {
 		excludedCategories = append(excludedCategories, "birthday")
+	}
+	if query.Has("exclude-first-year-weeks") {
+		excludedCategories = append(excludedCategories, "first-year-weeks")
 	}
 
 	paramBirth := query.Get("birth")
@@ -189,7 +195,7 @@ func generateICalendar(results []models.ResultEntry, birthDate time.Time, name s
 	} else {
 		cal.SetXWRCalName("Baby Kalender")
 	}
-	cal.SetXWRCalDesc("Auf Basis einer URL generierter Kalender mit besonderen Jahrestagen")
+	cal.SetXWRCalDesc(fmt.Sprintf("Auf Basis einer URL generierter Kalender mit %d besonderen Jahrestagen", len(results)))
 
 	cal.SetMethod(ics.MethodPublish)
 
