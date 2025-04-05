@@ -18,7 +18,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.1.10"
+const version = "0.1.11"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -84,7 +84,9 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	format := query.Get("format")
-	if format == "" {
+	if format == "json" {
+		format = "json"
+	} else {
 		format = "ical"
 	}
 
