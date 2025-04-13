@@ -4,11 +4,15 @@ import (
 	"fmt"
 )
 
-func GetSummary(name, formattedTimePeriod string) string {
+func GetSummary(name, formattedTimePeriod string, includeEmoji bool, emoji string) string {
+	var summary string
 	if name != "" {
-		return fmt.Sprintf("%s %s", name, formattedTimePeriod)
+		summary = fmt.Sprintf("%s %s", name, formattedTimePeriod)
 	}
-	return formattedTimePeriod
+	if includeEmoji {
+		return fmt.Sprintf("%s %s", emoji, summary)
+	}
+	return summary
 }
 
 func GetDescription(name string, DaysBetween int) string {

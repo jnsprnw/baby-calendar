@@ -26,7 +26,7 @@ func getID(resultID string, birthDate time.Time, version string) string {
 }
 
 // Hilfsfunktion zur Generierung von iCalendar-Daten
-func GenerateICalendar(results []models.ResultEntry, birthDate time.Time, name, version string) ([]byte, error) {
+func GenerateICalendar(results []models.ResultEntry, birthDate time.Time, name, version string, includeEmoji bool) ([]byte, error) {
 	cal := ics.NewCalendar()
 	cal.SetProductId(fmt.Sprintf("-//Baby Calendar//Go Implementation %s//DE", version)) // PRODID
 	cal.SetVersion("2.0")                                                                // VERSION
@@ -60,7 +60,7 @@ func GenerateICalendar(results []models.ResultEntry, birthDate time.Time, name, 
 		event.AddProperty("DTSTART", startDate)
 		event.AddProperty("DTSTART;VALUE=DATE", startDate)
 		event.AddProperty("DTEND;VALUE=DATE", endDate)
-		event.SetSummary(display.GetSummary(name, result.FormattedTimePeriod))
+		event.SetSummary(display.GetSummary(name, result.FormattedTimePeriod, includeEmoji, result.Emoji))
 		event.SetDescription(display.GetDescription(name, result.DaysBetween))
 	}
 
@@ -71,7 +71,7 @@ func GenerateICalendar(results []models.ResultEntry, birthDate time.Time, name, 
 }
 
 // CreateCachedResults erstellt ein CachedResults-Objekt mit den aktuellen Daten
-func GenerateJSONList(birth time.Time, results []models.ResultEntry, name string, excludedCategories []string) models.CachedResultsJSON {
+func GenerateJSONList(birth time.Time, results []models.ResultEntry, name string, excludedCategories []string, includeEmoji bool) models.CachedResultsJSON {
 	var resultsJSON []models.ResultEntryJSON
 
 	for _, result := range results {
@@ -82,7 +82,7 @@ func GenerateJSONList(birth time.Time, results []models.ResultEntry, name string
 			ResultId:            result.ResultId,
 			FormattedTimePeriod: result.FormattedTimePeriod,
 			DaysBetween:         result.DaysBetween,
-			Summary:             display.GetSummary(name, result.FormattedTimePeriod),
+			Summary:             display.GetSummary(name, result.FormattedTimePeriod, includeEmoji, result.Emoji),
 			Description:         display.GetDescription(name, result.DaysBetween),
 		})
 	}

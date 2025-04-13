@@ -59,11 +59,10 @@ func LoadTimePeriods(filePath string) ([]models.TimePeriod, error) {
 		}
 
 		// Das 6. Element ist der optionale Emoji
+		period.Emoji = "✨"
 		if len(raw) > 5 {
 			if emoji, ok := raw[5].(string); ok {
 				period.Emoji = emoji
-			} else {
-				period.Emoji = "✨"
 			}
 		}
 

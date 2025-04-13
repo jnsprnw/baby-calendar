@@ -11,7 +11,7 @@ import (
 
 const cacheDir = ".cache"
 
-func GenerateCacheFileName(date time.Time, version string, excludedCategories []string, name string) string {
+func GenerateCacheFileName(date time.Time, version string, excludedCategories []string, name string, includeEmoji bool) string {
 	dateStr := date.Format("2006-01-02")
 	fingerprint := []string{dateStr, version}
 	if len(excludedCategories) > 0 {
@@ -19,6 +19,9 @@ func GenerateCacheFileName(date time.Time, version string, excludedCategories []
 	}
 	if name != "" {
 		fingerprint = append(fingerprint, NameToFilename(name))
+	}
+	if includeEmoji {
+		fingerprint = append(fingerprint, "emoji")
 	}
 	return filepath.Join(cacheDir, fmt.Sprintf("results_%s.json", strings.Join(fingerprint[:], "_")))
 }

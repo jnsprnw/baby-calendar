@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.1.19"
+const version = "0.1.20"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -105,6 +105,13 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 		format = "ical"
 	}
 
+	var includeEmoji bool
+	if query.Has("emoji") {
+		includeEmoji = true
+	} else {
+		includeEmoji = false
+	}
+
 	birth := time.Now()
 
 	var excludedCategories = getExcludedCategories(query)
@@ -123,7 +130,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	dateStr := birth.Format("2006-01-02")
 	dateNow := time.Now().Format("2006-01-02 15:04:05")
 
-	cachePath := cache.GenerateCacheFileName(birth, version, excludedCategories, cleanName)
+	cachePath := cache.GenerateCacheFileName(birth, version, excludedCategories, cleanName, includeEmoji)
 
 	// 3. Prüfen, ob bereits eine Cache-Datei für das aktuelle Datum existiert
 	cachedData, err := cache.LoadCachedData(cachePath)
@@ -152,7 +159,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	switch format {
 	case "json":
 		// JSON-Antwort erstellen
-		cachedResults := output.GenerateJSONList(birth, results, cleanName, excludedCategories)
+		cachedResults := output.GenerateJSONList(birth, results, cleanName, excludedCategories, includeEmoji)
 		responseData, err = json.MarshalIndent(cachedResults, "", "  ")
 		if err != nil {
 			http.Error(w, "Error generating JSON response", http.StatusInternalServerError)
@@ -161,7 +168,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 
 	case "ical":
 		// iCalendar-Antwort erstellen
-		responseData, err = output.GenerateICalendar(results, birth, cleanName, version)
+		responseData, err = output.GenerateICalendar(results, birth, cleanName, version, includeEmoji)
 		if err != nil {
 			http.Error(w, "Error generating iCalendar", http.StatusInternalServerError)
 			return
