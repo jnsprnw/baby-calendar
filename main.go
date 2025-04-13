@@ -9,12 +9,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/rs/cors"
 )
 
-const version = "0.1.17"
+const version = "0.1.18"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -58,6 +59,24 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
+func getExcludedCategories(query url.Values) []string {
+	var excludedCategories = []string{}
+
+	if !query.Has("include-birth") {
+		excludedCategories = append(excludedCategories, "birth")
+	}
+	if !query.Has("include-birthdays") {
+		excludedCategories = append(excludedCategories, "birthday")
+	}
+	if query.Has("exclude-first-year-weeks") {
+		excludedCategories = append(excludedCategories, "first-year-weeks")
+	}
+	if !query.Has("include-above-100") {
+		excludedCategories = append(excludedCategories, "above-100")
+	}
+	return excludedCategories
+}
+
 func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -88,20 +107,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 
 	birth := time.Now()
 
-	var excludedCategories = []string{}
-
-	if !query.Has("include-birth") {
-		excludedCategories = append(excludedCategories, "birth")
-	}
-	if !query.Has("include-birthdays") {
-		excludedCategories = append(excludedCategories, "birthday")
-	}
-	if query.Has("exclude-first-year-weeks") {
-		excludedCategories = append(excludedCategories, "first-year-weeks")
-	}
-	if !query.Has("include-above-100") {
-		excludedCategories = append(excludedCategories, "above-100")
-	}
+	var excludedCategories = getExcludedCategories(query)
 
 	paramBirth := query.Get("birth")
 	if paramBirth != "" {
@@ -115,7 +121,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dateStr := birth.Format("2006-01-02")
-	// fmt.Printf("Geburtstag: %s\n", birth.Format("02.01.2006"))
+	dateNow := time.Now().Format("2006-01-02 15:04:05")
 
 	cachePath := cache.GenerateCacheFileName(birth, version, excludedCategories, cleanName)
 
@@ -123,7 +129,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	cachedData, err := cache.LoadCachedData(cachePath)
 	if err == nil {
 		// Cache gefunden, direkt ausliefern
-		fmt.Printf("Cache gefunden für %s im Format %s.\n", dateStr, format)
+		fmt.Printf("%s: Cache gefunden für %s im Format %s.\n", dateNow, dateStr, format)
 
 		// Content-Type setzen basierend auf Format
 		output.SetContentTypeByFormat(w, format)
@@ -134,7 +140,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 4. Keine Cache-Datei gefunden oder Fehler beim Laden - Neue Berechnung durchführen
-	fmt.Printf("Kein gültiger Cache gefunden. Berechne neue Ergebnisse für %s..\n", dateStr)
+	fmt.Printf("%s: Kein gültiger Cache gefunden. Berechne neue Ergebnisse für %s im Format %s.\n", dateNow, dateStr, format)
 
 	// 6. Berechnung der neuen Daten durchführen
 	results := processor.CalculateResults(timePeriods, birth, excludedCategories)
