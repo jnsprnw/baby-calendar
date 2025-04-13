@@ -69,3 +69,29 @@ func GenerateICalendar(results []models.ResultEntry, birthDate time.Time, name, 
 
 	return []byte(calData), nil
 }
+
+// CreateCachedResults erstellt ein CachedResults-Objekt mit den aktuellen Daten
+func GenerateJSONList(birth time.Time, results []models.ResultEntry, name string, excludedCategories []string) models.CachedResultsJSON {
+	var resultsJSON []models.ResultEntryJSON
+
+	for _, result := range results {
+		resultsJSON = append(resultsJSON, models.ResultEntryJSON{
+			OriginalValues:      result.OriginalValues.Values,
+			ResultDate:          result.ResultDate.Format("2006-01-02"),
+			FormattedDate:       result.FormattedDate,
+			ResultId:            result.ResultId,
+			FormattedTimePeriod: result.FormattedTimePeriod,
+			DaysBetween:         result.DaysBetween,
+			Summary:             display.GetSummary(name, result.FormattedTimePeriod),
+			Description:         display.GetDescription(name, result.DaysBetween),
+		})
+	}
+
+	return models.CachedResultsJSON{
+		GeneratedDate:      time.Now().Format(time.RFC3339),
+		BasedOnDate:        birth.Format("2006-01-02"),
+		Name:               name,
+		ExcludedCategories: excludedCategories,
+		Results:            resultsJSON,
+	}
+}

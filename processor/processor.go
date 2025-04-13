@@ -213,12 +213,3 @@ func CalculateResults(timePeriods []models.TimePeriod, birth time.Time, excluded
 	})
 	return results
 }
-
-// CreateCachedResults erstellt ein CachedResults-Objekt mit den aktuellen Daten
-func CreateCachedResults(currentDate time.Time, results []models.ResultEntry) models.CachedResults {
-	return models.CachedResults{
-		GeneratedDate: time.Now().Format(time.RFC3339),
-		BasedOnDate:   currentDate.Format("2006-01-02"),
-		Results:       results,
-	}
-}

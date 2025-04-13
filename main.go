@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.1.18"
+const version = "0.1.19"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -152,7 +152,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	switch format {
 	case "json":
 		// JSON-Antwort erstellen
-		cachedResults := processor.CreateCachedResults(birth, results)
+		cachedResults := output.GenerateJSONList(birth, results, cleanName, excludedCategories)
 		responseData, err = json.MarshalIndent(cachedResults, "", "  ")
 		if err != nil {
 			http.Error(w, "Error generating JSON response", http.StatusInternalServerError)
