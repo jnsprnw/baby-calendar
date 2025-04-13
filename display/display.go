@@ -1,18 +1,35 @@
 package display
 
 import (
-	"baby-calendar/models"
 	"fmt"
 )
 
-// DisplayResults zeigt die Ergebnisse an
-func DisplayResults(results []models.ResultEntry) {
-	for _, result := range results {
-		fmt.Printf("Original: +%d Tage, +%d Wochen, +%d Monate, +%d Jahre => Neues Datum: %s\n",
-			result.OriginalValues[3],
-			result.OriginalValues[2],
-			result.OriginalValues[1],
-			result.OriginalValues[0],
-			result.FormattedDate)
+func GetSummary(name, formattedTimePeriod string) string {
+	if name != "" {
+		return fmt.Sprintf("%s %s", name, formattedTimePeriod)
+	}
+	return formattedTimePeriod
+}
+
+func GetDescription(name string, DaysBetween int) string {
+	var dayText string
+	if DaysBetween == 1 {
+		dayText = "Tag"
+	} else {
+		dayText = "Tage"
+	}
+
+	if name != "" {
+		if DaysBetween > 0 {
+			return fmt.Sprintf("%s ist %d %s alt!", name, DaysBetween, dayText)
+		} else {
+			return fmt.Sprintf("%s wird geboren!", name)
+		}
+	} else {
+		if DaysBetween > 0 {
+			return fmt.Sprintf("Das sind %d %s", DaysBetween, dayText)
+		} else {
+			return fmt.Sprintf("Geburtstag!")
+		}
 	}
 }

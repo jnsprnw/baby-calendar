@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -91,4 +92,39 @@ func NameToFilename(cleanName string) string {
 	}
 
 	return filename
+}
+
+// Hilfsfunktion zum Laden von Cache-Daten als Byte-Array
+func LoadCachedData(path string) ([]byte, error) {
+	return os.ReadFile(path)
+}
+
+// Hilfsfunktion zum Speichern von Cache-Daten
+func SaveCachedData(path string, data []byte) error {
+	return os.WriteFile(path, data, 0644)
+}
+
+// SanitizeName bereinigt einen Personennamen für allgemeine Verwendung
+// - Behält nur Buchstaben, Zahlen, Leerzeichen und gängige Interpunktionen
+// - Entfernt HTML/Script-Tags und andere potenziell gefährliche Zeichen
+// - Normalisiert Leerzeichen
+// - Behält Umlaute und andere kulturspezifische Zeichen bei
+func SanitizeName(input string) string {
+	// 1. Trimmen von Leerzeichen
+	input = strings.TrimSpace(input)
+
+	// 2. Entfernung von HTML-Tags, Scripts, etc.
+	htmlTagsRegex := regexp.MustCompile(`<[^>]*>`)
+	input = htmlTagsRegex.ReplaceAllString(input, "")
+
+	// 3. Erlaubte Zeichen für Namen (einschließlich internationaler Zeichen)
+	// Behält Buchstaben (inkl. Umlaute), Zahlen, Leerzeichen, Apostroph, Bindestrich, Punkt
+	validCharsRegex := regexp.MustCompile(`[^\p{L}\p{N}\s'.\-]`)
+	input = validCharsRegex.ReplaceAllString(input, "")
+
+	// 4. Mehrfache Leerzeichen normalisieren
+	spaceRegex := regexp.MustCompile(`\s+`)
+	input = spaceRegex.ReplaceAllString(input, " ")
+
+	return input
 }
