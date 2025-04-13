@@ -152,8 +152,29 @@ func checkOverlapInCategories(exclude, list []string) bool {
 	return false
 }
 
+func filterResultsAbove100(results []models.ResultEntry, birth time.Time, excludedCategories []string) []models.ResultEntry {
+	// Überprüfe, ob "above-100" in den ausgeschlossenen Kategorien ist
+	excludeAbove100 := slices.Contains(excludedCategories, "above-100")
+
+	if !excludeAbove100 {
+		return results
+	}
+	hundredYearsAfterBirth := birth.AddDate(100, 0, 2)
+
+	// Filtere die Ergebnisse
+	filteredResults := make([]models.ResultEntry, 0)
+	for _, result := range results {
+		// Füge nur Ergebnisse hinzu, die vor birth+100 Jahren liegen
+		if result.ResultDate.Before(hundredYearsAfterBirth) {
+			filteredResults = append(filteredResults, result)
+		}
+	}
+
+	return filteredResults
+}
+
 // CalculateResults berechnet die Ergebnisdaten basierend auf den Zeitperioden und dem aktuellen Datum
-func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time, excludedCategories []string) []models.ResultEntry {
+func CalculateResults(timePeriods []models.TimePeriod, birth time.Time, excludedCategories []string) []models.ResultEntry {
 	var results []models.ResultEntry
 	for _, period := range timePeriods {
 		if checkOverlapInCategories(excludedCategories, period.Categories) {
@@ -168,7 +189,7 @@ func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time, ex
 		day := values[3]
 
 		// Addieren der Zeitwerte zum aktuellen Datum
-		resultDate := currentDate.
+		resultDate := birth.
 			AddDate(year, month, day).
 			AddDate(0, 0, week*7) // Wochen in Tage umrechnen
 
@@ -179,12 +200,14 @@ func CalculateResults(timePeriods []models.TimePeriod, currentDate time.Time, ex
 			FormattedDate:       resultDate.Format("02.01.2006"),
 			ResultId:            fmt.Sprintf("%d-%d-%d-%d", year, month, week, day),
 			FormattedTimePeriod: FormatTimePeriod(year, month, week, day),
-			DaysBetween:         daysBetween(currentDate, resultDate),
+			DaysBetween:         daysBetween(birth, resultDate),
 			Emoji:               period.Emoji,
 			Categories:          period.Categories,
 		}
 		results = append(results, result)
 	}
+	results = filterResultsAbove100(results, birth, excludedCategories)
+
 	sort.Slice(results, func(i, j int) bool {
 		return results[i].DaysBetween < results[j].DaysBetween
 	})

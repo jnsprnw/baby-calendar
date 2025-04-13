@@ -18,7 +18,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.1.15"
+const version = "0.1.16"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -102,6 +102,9 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	if query.Has("exclude-first-year-weeks") {
 		excludedCategories = append(excludedCategories, "first-year-weeks")
+	}
+	if !query.Has("include-above-100") {
+		excludedCategories = append(excludedCategories, "above-100")
 	}
 
 	paramBirth := query.Get("birth")
