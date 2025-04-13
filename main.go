@@ -175,7 +175,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	// Ergebnisse im Cache speichern
 	err = cache.SaveCachedData(cachePath, responseData)
 	if err != nil {
-		fmt.Printf("Fehler beim Speichern im Cache: %v\n", err)
+		fmt.Printf("%s:Fehler beim Speichern im Cache von %s im Format %s: %v\n", dateNow, dateStr, format, err)
 	}
 
 	// Content-Type setzen basierend auf Format
