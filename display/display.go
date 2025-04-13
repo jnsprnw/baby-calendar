@@ -8,6 +8,8 @@ func GetSummary(name, formattedTimePeriod string, includeEmoji bool, emoji strin
 	var summary string
 	if name != "" {
 		summary = fmt.Sprintf("%s %s", name, formattedTimePeriod)
+	} else {
+		summary = formattedTimePeriod
 	}
 	if includeEmoji {
 		return fmt.Sprintf("%s %s", emoji, summary)
