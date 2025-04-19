@@ -37,13 +37,11 @@ func main() {
 	}
 	fmt.Printf("%d Zeitperioden erfolgreich geladen\n", len(timePeriods))
 
-	http.HandleFunc("/calendar", handleCalendarRequest)
+	http.HandleFunc("/subscribe", handleCalendarRequest)
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{
-			// "http://localhost:3000",    // Entwicklungsumgebung
-			// "https://deine-domain.com", // Deine Produktionsdomäne
 			"http://localhost:5173", // SvelteKit dev Server
-			"http://localhost:4173", // SvelteKit preview
+			"https://baby-calendar.jonasparnow.com",
 		},
 		AllowedMethods:   []string{"GET"},
 		AllowedHeaders:   []string{"Origin", "Content-Type", "Accept", "Authorization"},
