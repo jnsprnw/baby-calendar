@@ -11,9 +11,9 @@ import (
 
 const cacheDir = ".cache"
 
-func GenerateCacheFileName(date time.Time, version string, excludedCategories []string, name string, includeEmoji bool) string {
+func GenerateCacheFileName(date time.Time, version string, excludedCategories []string, name string, includeEmoji bool, format string) string {
 	dateStr := date.Format("2006-01-02")
-	fingerprint := []string{dateStr, version}
+	fingerprint := []string{dateStr, version, format}
 	if len(excludedCategories) > 0 {
 		fingerprint = append(fingerprint, strings.Join(excludedCategories[:], "_"))
 	}
