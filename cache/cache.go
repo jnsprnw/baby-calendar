@@ -46,7 +46,7 @@ func NameToFilename(cleanName string) string {
 	filename = strings.ReplaceAll(filename, ".", "")
 
 	// 3. Länge begrenzen
-	maxLength := 100
+	maxLength := 300
 	if len(filename) > maxLength {
 		filename = filename[:maxLength]
 	}

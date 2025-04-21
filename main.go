@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.2.2"
+const version = "0.2.3"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -129,6 +129,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	dateNow := time.Now().Format("2006-01-02 15:04:05")
 
 	cachePath := cache.GenerateCacheFileName(birth, version, excludedCategories, cleanName, includeEmoji, format)
+	fmt.Printf("Cache path: %s (Length: %d)\n", cachePath, len(cachePath))
 
 	// 3. Prüfen, ob bereits eine Cache-Datei für das aktuelle Datum existiert
 	cachedData, err := cache.LoadCachedData(cachePath)
