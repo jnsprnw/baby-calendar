@@ -2,14 +2,6 @@
 
 Basierend auf dem Datum der Geburt des Kindes wird ein Kalender generiert, der besondere Tage wie 6 Monate, 100 Wochen, 123 Monate, etc. enthält. Der Kalender kann in Apple Calendar, Google Calendar und andere Kalender-Anwendungen importiert werden.
 
-## Features
-
-- Geburt anzeigen
-- Jede Woche im ersten Jahr anzeigen
-- Geburtstage anzeigen
-- Einträge über 100 Jahren anzeigen
-- Emoji anzeigen
-
 ## Nutzung
 
 Um den Baby-Kalender zu nutzen, generiere zuerst eine URL unter [https://baby-calendar.jonasparnow.com/](https://baby-calendar.jonasparnow.com/).
