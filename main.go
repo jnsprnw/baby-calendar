@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.2.3"
+const version = "0.2.4"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -42,6 +42,7 @@ func main() {
 		AllowedOrigins: []string{
 			"http://localhost:5173", // SvelteKit dev Server
 			"https://baby-calendar.jonasparnow.com",
+			"https://observablehq.com/",
 		},
 		AllowedMethods:   []string{"GET"},
 		AllowedHeaders:   []string{"Origin", "Content-Type", "Accept", "Authorization"},
