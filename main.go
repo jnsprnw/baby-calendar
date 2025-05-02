@@ -133,7 +133,7 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 	dateNow := time.Now().Format("2006-01-02 15:04:05")
 
 	cachePath := cache.GenerateCacheFileName(birth, version, excludedCategories, cleanName, includeEmoji, format)
-	fmt.Printf("Cache path: %s (Length: %d)\n", cachePath, len(cachePath))
+	// fmt.Printf("Cache path: %s (Length: %d)\n", cachePath, len(cachePath))
 
 	// 3. Prüfen, ob bereits eine Cache-Datei für das aktuelle Datum existiert
 	cachedData, err := cache.LoadCachedData(cachePath)
