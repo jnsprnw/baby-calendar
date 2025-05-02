@@ -46,7 +46,7 @@ func main() {
 			"https://observablehq.run",
 			"https://*.observablehq.com",
 			"https://*.observablehq.run",
-			"https://*.observableusercontent.com"
+			"https://*.observableusercontent.com",
 		},
 		AllowedMethods:   []string{"GET"},
 		AllowedHeaders:   []string{"Origin", "Content-Type", "Accept", "Authorization"},
