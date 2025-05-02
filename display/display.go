@@ -2,6 +2,8 @@ package display
 
 import (
 	"fmt"
+	"strings"
+	"time"
 )
 
 func GetSummary(name, formattedTimePeriod string, includeEmoji bool, emoji string) string {
@@ -17,7 +19,7 @@ func GetSummary(name, formattedTimePeriod string, includeEmoji bool, emoji strin
 	return summary
 }
 
-func GetDescription(name string, DaysBetween int) string {
+func GetDescription(name string, DaysBetween int, birthDate time.Time) string {
 	var dayText string
 	if DaysBetween == 1 {
 		dayText = "Tag"
@@ -25,17 +27,24 @@ func GetDescription(name string, DaysBetween int) string {
 		dayText = "Tage"
 	}
 
+	var descriptions []string
+
+	if DaysBetween > 0 {
+		descriptions = append(descriptions, fmt.Sprintf("Geburtstag: %s", birthDate.Format("02.01.2006")))
+	}
+
 	if name != "" {
 		if DaysBetween > 0 {
-			return fmt.Sprintf("%s ist %d %s alt!", name, DaysBetween, dayText)
+			descriptions = append(descriptions, fmt.Sprintf("%s ist heute %d %s alt!", name, DaysBetween, dayText))
 		} else {
-			return fmt.Sprintf("%s wird geboren!", name)
+			descriptions = append(descriptions, fmt.Sprintf("%s wird geboren!", name))
 		}
 	} else {
 		if DaysBetween > 0 {
-			return fmt.Sprintf("Das sind %d %s", DaysBetween, dayText)
+			descriptions = append(descriptions, fmt.Sprintf("Das ist heute %d %s her.", DaysBetween, dayText))
 		} else {
-			return fmt.Sprintf("Geburtstag!")
+			descriptions = append(descriptions, fmt.Sprintf("Geburtstag!"))
 		}
 	}
+	return strings.Join(descriptions, "\n")
 }

@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.2.5"
+const version = "0.2.6"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
