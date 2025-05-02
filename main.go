@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.2.4"
+const version = "0.2.5"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -42,12 +42,15 @@ func main() {
 		AllowedOrigins: []string{
 			"http://localhost:5173", // SvelteKit dev Server
 			"https://baby-calendar.jonasparnow.com",
-			"https://observablehq.com/",
+			"https://observablehq.com",
+			"https://observablehq.run",
+			"https://*.observablehq.com",
+			"https://*.observablehq.run",
 		},
 		AllowedMethods:   []string{"GET"},
 		AllowedHeaders:   []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowCredentials: true,
-		Debug:            false, // Auf true setzen für Debugging
+		Debug:            true,
 	})
 
 	// Die Hauptsache hier: Wir erstellen einen neuen Handler, der alle
