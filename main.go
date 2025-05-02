@@ -42,16 +42,12 @@ func main() {
 		AllowedOrigins: []string{
 			"http://localhost:5173", // SvelteKit dev Server
 			"https://baby-calendar.jonasparnow.com",
-			"https://observablehq.com",
-			"https://observablehq.run",
-			"https://*.observablehq.com",
-			"https://*.observablehq.run",
 			"https://*.observableusercontent.com",
 		},
 		AllowedMethods:   []string{"GET"},
 		AllowedHeaders:   []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowCredentials: true,
-		Debug:            true,
+		Debug:            false,
 	})
 
 	// Die Hauptsache hier: Wir erstellen einen neuen Handler, der alle
