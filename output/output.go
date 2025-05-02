@@ -83,7 +83,7 @@ func GenerateJSONList(birth time.Time, results []models.ResultEntry, name string
 			FormattedTimePeriod: result.FormattedTimePeriod,
 			DaysBetween:         result.DaysBetween,
 			Summary:             display.GetSummary(name, result.FormattedTimePeriod, includeEmoji, result.Emoji),
-			Description:         display.GetDescription(name, result.DaysBetween),
+			Description:         display.GetDescription(name, result.DaysBetween, birth),
 		})
 	}
 
