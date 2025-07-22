@@ -2,6 +2,7 @@ package cache
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -73,16 +74,30 @@ func SanitizeName(input string) string {
 	// 1. Trimmen von Leerzeichen
 	input = strings.TrimSpace(input)
 
-	// 2. Entfernung von HTML-Tags, Scripts, etc.
+	// 2. URL-Dekodierung für Werte die per URL übergeben wurden
+	// z.B. "Tim%2520%2526%2520Tom" wird zu "Tim & Tom"
+	decoded, err := url.QueryUnescape(input)
+	if err == nil {
+		input = decoded
+		// Mehrfache URL-Dekodierung falls nötig (für doppelt kodierte Werte)
+		if strings.Contains(input, "%") {
+			decoded2, err2 := url.QueryUnescape(input)
+			if err2 == nil {
+				input = decoded2
+			}
+		}
+	}
+
+	// 3. Entfernung von HTML-Tags, Scripts, etc.
 	htmlTagsRegex := regexp.MustCompile(`<[^>]*>`)
 	input = htmlTagsRegex.ReplaceAllString(input, "")
 
-	// 3. Erlaubte Zeichen für Namen (einschließlich internationaler Zeichen)
-	// Behält Buchstaben (inkl. Umlaute), Zahlen, Leerzeichen, Apostroph, Bindestrich, Punkt
-	validCharsRegex := regexp.MustCompile(`[^\p{L}\p{N}\s'.\-]`)
+	// 4. Erlaubte Zeichen für Namen (einschließlich internationaler Zeichen)
+	// Behält Buchstaben (inkl. Umlaute), Zahlen, Leerzeichen, Apostroph, Bindestrich, Punkt, &, +
+	validCharsRegex := regexp.MustCompile(`[^\p{L}\p{N}\s'.\-&+]`)
 	input = validCharsRegex.ReplaceAllString(input, "")
 
-	// 4. Mehrfache Leerzeichen normalisieren
+	// 5. Mehrfache Leerzeichen normalisieren
 	spaceRegex := regexp.MustCompile(`\s+`)
 	input = spaceRegex.ReplaceAllString(input, " ")
 
