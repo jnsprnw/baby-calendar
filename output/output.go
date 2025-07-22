@@ -61,7 +61,7 @@ func GenerateICalendar(results []models.ResultEntry, birthDate time.Time, name, 
 		event.AddProperty("DTSTART;VALUE=DATE", startDate)
 		event.AddProperty("DTEND;VALUE=DATE", endDate)
 		event.SetSummary(display.GetSummary(name, result.FormattedTimePeriod, includeEmoji, result.Emoji))
-		event.SetDescription(display.GetDescription(name, result.DaysBetween))
+		event.SetDescription(display.GetDescription(name, result.DaysBetween, birthDate))
 	}
 
 	// iCalendar-Daten als String rendern
@@ -83,7 +83,7 @@ func GenerateJSONList(birth time.Time, results []models.ResultEntry, name string
 			FormattedTimePeriod: result.FormattedTimePeriod,
 			DaysBetween:         result.DaysBetween,
 			Summary:             display.GetSummary(name, result.FormattedTimePeriod, includeEmoji, result.Emoji),
-			Description:         display.GetDescription(name, result.DaysBetween),
+			Description:         display.GetDescription(name, result.DaysBetween, birth),
 		})
 	}
 
