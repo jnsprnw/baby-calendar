@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.2.3"
+const version = "0.2.4"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -81,13 +81,10 @@ func handleCalendarRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Implement calendar request handling logic here
-	// fmt.Fprintf(w, "Calendar request received")
-
 	query := r.URL.Query()
 
 	var name string
-	if query.Has("name") { // Ab Go 1.21
+	if query.Has("name") {
 		// Parameter existiert (mit oder ohne Wert)
 		name = query.Get("name")
 	}
