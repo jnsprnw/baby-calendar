@@ -15,7 +15,7 @@ import (
 	"github.com/rs/cors"
 )
 
-const version = "0.2.9"
+const version = "0.2.10"
 const port = 8080
 
 // Global verfügbare timePeriods - werden nur einmal beim Serverstart geladen
@@ -75,6 +75,9 @@ func getExcludedCategories(query url.Values) []string {
 	}
 	if !query.Has("include-second-year-weeks") {
 		excludedCategories = append(excludedCategories, "second-year-weeks")
+	}
+	if !query.Has("include-second-year-months") {
+		excludedCategories = append(excludedCategories, "second-year-months")
 	}
 	return excludedCategories
 }
