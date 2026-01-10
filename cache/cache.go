@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const cacheDir = ".cache"
+const cacheDir = "/app/.cache"
 
 func GenerateCacheFileName(date time.Time, version string, excludedCategories []string, name string, includeEmoji bool, format string) string {
 	dateStr := date.Format("2006-01-02")
